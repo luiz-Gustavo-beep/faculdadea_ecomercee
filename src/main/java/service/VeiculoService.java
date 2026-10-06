@@ -28,8 +28,8 @@ public class VeiculoService {
     }
 
     public Iterable<Veiculo> listarVeiculos() {
-        return veiculoRepository.findAll();
-    }
+    return veiculoRepository.findBySituacao("disponível");
+    }   
 
     public Veiculo atualizarVeiculo(Long id, Veiculo veiculo) {
         veiculo.setId(id);

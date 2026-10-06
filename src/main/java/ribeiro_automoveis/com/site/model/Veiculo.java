@@ -22,6 +22,8 @@ import jakarta.persistence.ManyToOne;
         private Integer ano;
         private BigDecimal preco;
         private String descricao;
+        private String situacao;
+
         @ManyToOne
         private Administrador administrador;   
        
@@ -77,9 +79,18 @@ import jakarta.persistence.ManyToOne;
             this.descricao = descricao;
         }
 
+        public String getSituacao() {
+            return situacao;
+        }
+
+        public void setSituacao(String situacao) {
+            this.situacao = situacao;
+        }
+
         public Administrador getAdministrador() {
             return administrador;
         }
+        
         public void setAdministrador(Administrador administrador) {
             this.administrador = administrador;
         }

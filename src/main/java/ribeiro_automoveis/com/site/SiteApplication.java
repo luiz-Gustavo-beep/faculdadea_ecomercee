@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(scanBasePackages = {
     "ribeiro_automoveis.com.site",
+    "ribeiro_automoveis",
     "service"
 })
 public class SiteApplication {

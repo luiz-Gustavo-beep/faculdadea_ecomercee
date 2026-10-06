@@ -22,8 +22,11 @@ import ribeiro_automoveis.com.site.model.Veiculo;
 
 import service.VeiculoService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
 @RequestMapping("/veiculos")
+@SecurityRequirement(name = "basicAuth")
 public class VeiculoController {
 
     @Autowired
@@ -53,4 +56,5 @@ public class VeiculoController {
     public void excluirVeiculo(@PathVariable Long id) {
         veiculoService.excluirVeiculo(id);
     }
+    
 }
