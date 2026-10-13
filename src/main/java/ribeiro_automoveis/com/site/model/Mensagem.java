@@ -1,42 +1,56 @@
+
 package ribeiro_automoveis.com.site.model;
-
-
 
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
-
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-@Entity 
+@Entity
 public class Mensagem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;         
+    private Long id;
+
+    @NotBlank(message = "O nome é obrigatório")
     private String nome;
+
+    @NotBlank(message = "O e-mail é obrigatório")
+    @Email(message = "Informe um e-mail válido")
     private String email;
+
+    @NotBlank(message = "O telefone é obrigatório")
     private String telefone;
-    private String texto; 
+
+    @NotBlank(message = "O texto da mensagem é obrigatório")
+    private String texto;
+
     private LocalDateTime dataEnvio;
-    @ManyToOne 
-    private Veiculo veiculo;    
+
+    private boolean lida = false;
+
+    @NotNull(message = "O veículo é obrigatório")
+    @ManyToOne
+    private Veiculo veiculo;
 
     public Mensagem() {
     }
 
-    // Getters e Setters
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }   
-    
+    }
+
     public String getNome() {
         return nome;
     }
@@ -60,7 +74,7 @@ public class Mensagem {
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
-    
+
     public String getTexto() {
         return texto;
     }
@@ -77,6 +91,14 @@ public class Mensagem {
         this.dataEnvio = dataEnvio;
     }
 
+    public boolean isLida() {
+        return lida;
+    }
+
+    public void setLida(boolean lida) {
+        this.lida = lida;
+    }
+
     public Veiculo getVeiculo() {
         return veiculo;
     }
@@ -84,7 +106,4 @@ public class Mensagem {
     public void setVeiculo(Veiculo veiculo) {
         this.veiculo = veiculo;
     }
-
-
-
 }

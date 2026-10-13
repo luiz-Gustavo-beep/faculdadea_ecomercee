@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
@@ -32,6 +33,25 @@ public class VeiculoController {
     @GetMapping("/{id}")
     public Veiculo buscarVeiculoPorId(@PathVariable Long id) {
         return veiculoService.buscarVeiculoPorId(id);
+    }
+
+    @GetMapping("/buscar/marca")
+    public Iterable<Veiculo> buscarPorMarca(
+            @RequestParam String marca) {
+        return veiculoService.buscarPorMarca(marca);
+    }
+
+    @GetMapping("/buscar/modelo")
+    public Iterable<Veiculo> buscarPorModelo(
+            @RequestParam String modelo) {
+        return veiculoService.buscarPorModelo(modelo);
+    }
+
+    @GetMapping("/buscar")
+    public Iterable<Veiculo> buscarPorMarcaEModelo(
+            @RequestParam String marca,
+            @RequestParam String modelo) {
+        return veiculoService.buscarPorMarcaEModelo(marca, modelo);
     }
 
     @PostMapping

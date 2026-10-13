@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Opcional {
@@ -21,13 +22,12 @@ public class Opcional {
     private boolean flex;
     private boolean direcao;
 
+    @NotNull(message = "O veículo é obrigatório")
     @ManyToOne
     private Veiculo veiculo;
 
     public Opcional() {
     }
-
-    // Getters e Setters
 
     public Long getId() {
         return id;
