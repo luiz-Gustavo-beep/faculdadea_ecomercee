@@ -1,4 +1,7 @@
-package ribeiro_automoveis.com.site.model;import java.math.BigDecimal;
+
+package ribeiro_automoveis.com.site.model;
+
+import java.math.BigDecimal;
 
 import jakarta.persistence.Entity;
 
@@ -10,89 +13,109 @@ import jakarta.persistence.Id;
 
 import jakarta.persistence.ManyToOne;
 
-    @Entity
+import jakarta.validation.constraints.NotBlank;
 
-    public class Veiculo {
-        
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
-        private String marca;
-        private String modelo;
-        private Integer ano;
-        private BigDecimal preco;
-        private String descricao;
-        private String situacao;
+import jakarta.validation.constraints.NotNull;
 
-        @ManyToOne
-        private Administrador administrador;   
-       
-        // Construtor
-        public Veiculo() {
-        }
+import jakarta.validation.constraints.Positive;
 
-        // Getters e Setters
-        public Long getId() {
-            return id;
-        }
+import jakarta.validation.constraints.PositiveOrZero;
 
-        public void setId(Long id) {
-            this.id = id;
-        }
+@Entity
+public class Veiculo {
 
-        public String getMarca() {
-            return marca;
-        }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        public void setMarca(String marca) {
-            this.marca = marca;
-        }
+    @NotBlank(message = "A marca é obrigatória")
+    private String marca;
 
-        public String getModelo() {
-            return modelo;
-        }
+    @NotBlank(message = "O modelo é obrigatório")
+    private String modelo;
 
-        public void setModelo(String modelo) {
-            this.modelo = modelo;
-        }
+    @NotNull(message = "O ano é obrigatório")
+    @Positive(message = "O ano deve ser maior que zero")
+    private Integer ano;
 
-        public Integer getAno() {
-            return ano;
-        }
+    @NotNull(message = "O preço é obrigatório")
+    @PositiveOrZero(message = "O preço não pode ser negativo")
+    private BigDecimal preco;
 
-        public void setAno(Integer ano) {
-            this.ano = ano;
-        }
+    @NotBlank(message = "A descrição é obrigatória")
+    private String descricao;
 
-        public BigDecimal getPreco() {
-            return preco;
-        }
+    @NotBlank(message = "A situação é obrigatória")
+    private String situacao;
 
-        public void setPreco(BigDecimal preco) {
-            this.preco = preco;
-        }
+    @NotNull(message = "O administrador é obrigatório")
+    @ManyToOne
+    private Administrador administrador;
 
-        public String getDescricao() {
-            return descricao;
-        }
-        public void setDescricao(String descricao) {
-            this.descricao = descricao;
-        }
-
-        public String getSituacao() {
-            return situacao;
-        }
-
-        public void setSituacao(String situacao) {
-            this.situacao = situacao;
-        }
-
-        public Administrador getAdministrador() {
-            return administrador;
-        }
-        
-        public void setAdministrador(Administrador administrador) {
-            this.administrador = administrador;
-        }
-
+    public Veiculo() {
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
+
+    public Integer getAno() {
+        return ano;
+    }
+
+    public void setAno(Integer ano) {
+        this.ano = ano;
+    }
+
+    public BigDecimal getPreco() {
+        return preco;
+    }
+
+    public void setPreco(BigDecimal preco) {
+        this.preco = preco;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public String getSituacao() {
+        return situacao;
+    }
+
+    public void setSituacao(String situacao) {
+        this.situacao = situacao;
+    }
+
+    public Administrador getAdministrador() {
+        return administrador;
+    }
+
+    public void setAdministrador(Administrador administrador) {
+        this.administrador = administrador;
+    }
+}
