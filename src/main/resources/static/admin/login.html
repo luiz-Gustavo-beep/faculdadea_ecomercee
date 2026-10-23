@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login Administrativo | Ribeiro Automóveis</title>
+
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+    <main class="login-container">
+        <div class="login-card">
+
+            <img
+                src="../img/logo-principal.png"
+                alt="Ribeiro Automóveis"
+                class="logo"
+            >
+
+            <p class="subtitulo">ÁREA RESTRITA</p>
+
+            <h1>Painel administrativo</h1>
+
+            <p class="descricao">
+                Entre com suas credenciais para continuar.
+            </p>
+
+            <form id="form-login" action="/login" method="post">
+
+                <div class="campo">
+                    <label for="usuario">Usuário</label>
+                    <input
+                        type="text"
+                        id="usuario"
+                        name="username"
+                        placeholder="Digite seu usuário"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="senha">Senha</label>
+                    <input
+                        type="password"
+                        id="senha"
+                        name="password"
+                        placeholder="Digite sua senha"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit">Entrar</button>
+
+                <p id="mensagem" role="status"></p>
+
+            </form>
+
+            <a href="../index.html" class="voltar">
+                Voltar ao site
+            </a>
+
+        </div>
+    </main>
+
+    <script>
+        const parametros = new URLSearchParams(window.location.search);
+        const mensagem = document.getElementById("mensagem");
+
+        if (parametros.has("erro")) {
+            mensagem.textContent = "Usuário ou senha inválidos.";
+        }
+    </script>
+
+</body>
+</html>

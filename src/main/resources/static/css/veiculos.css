@@ -1,0 +1,97 @@
+
+/* Catálogo de veículos */
+#catalogo .subtitulo {
+    color: #e87516;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.lista-veiculos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+    margin-top: 30px;
+}
+
+.card-veiculo {
+    min-width: 0;
+    background-color: #ffffff;
+    border: 1px solid #eeeeee;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card-veiculo:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Área da foto */
+.imagem-veiculo {
+    width: 100%;
+    height: 190px;
+    overflow: hidden;
+    background-color: #eeeeee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #777777;
+}
+
+.imagem-veiculo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+/* Informações do veículo */
+.info-veiculo {
+    padding: 20px;
+}
+
+.info-veiculo h3 {
+    font-size: 21px;
+    margin-bottom: 6px;
+    color: #292929;
+}
+
+.ano-veiculo {
+    color: #777777;
+    margin-bottom: 12px;
+}
+
+.preco-veiculo {
+    color: #e87516;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 18px;
+}
+
+.info-veiculo .botao-veiculo {
+    display: block;
+    text-align: center;
+    background-color: #f58220;
+    color: #ffffff;
+    padding: 11px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.info-veiculo .botao-veiculo:hover {
+    background-color: #d9660b;
+}
+
+/* Adaptação para celulares */
+@media (max-width: 600px) {
+    .lista-veiculos {
+        grid-template-columns: 1fr;
+    }
+}

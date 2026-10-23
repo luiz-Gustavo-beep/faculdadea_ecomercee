@@ -1,3 +1,4 @@
+
 package ribeiro_automoveis.com.site;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,27 @@ import service.AdministradorDetailsService;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
 
         http
             .csrf(csrf -> csrf.disable())
+
+            // Mantém a autenticação utilizada no Swagger
             .httpBasic(httpBasic -> {})
+
             .authorizeHttpRequests(auth -> auth
+
+                // Arquivos públicos do site
+                .requestMatchers(
+                    "/",
+                    "/index.html",
+                    "/veiculos.html",
+                    "/css/**",
+                    "/img/**",
+                    "/admin/login.html",
+                    "/admin/css/**"
+                ).permitAll()
 
                 // Swagger público
                 .requestMatchers(
@@ -31,53 +47,84 @@ public class SecurityConfig {
                 ).permitAll()
 
                 // Visitantes podem consultar veículos
-                .requestMatchers(HttpMethod.GET, "/veiculos", "/veiculos/**")
-                .permitAll()
+                .requestMatchers(
+                    HttpMethod.GET, "/veiculos", "/veiculos/**"
+                ).permitAll()
 
-                // Visitantes podem enviar mensagens de interesse
-                .requestMatchers(HttpMethod.POST, "/mensagens")
-                .permitAll()
+                // Visitantes podem enviar mensagens
+                .requestMatchers(
+                    HttpMethod.POST, "/mensagens"
+                ).permitAll()
 
-                // Consultar e administrar mensagens exige autenticação
-                .requestMatchers("/mensagens", "/mensagens/**")
-                .authenticated()
+                // Administração de mensagens
+                .requestMatchers(
+                    "/mensagens", "/mensagens/**"
+                ).authenticated()
 
                 // Consultas públicas de imagens e opcionais
-                .requestMatchers(HttpMethod.GET, "/imagens", "/imagens/**")
-                .permitAll()
-                .requestMatchers(HttpMethod.GET, "/opcionais", "/opcionais/**")
-                .permitAll()
+                .requestMatchers(
+                    HttpMethod.GET, "/imagens", "/imagens/**"
+                ).permitAll()
 
-                // Alterações de veículos exigem autenticação
-                .requestMatchers(HttpMethod.POST, "/veiculos", "/veiculos/**")
-                .authenticated()
-                .requestMatchers(HttpMethod.PUT, "/veiculos", "/veiculos/**")
-                .authenticated()
-                .requestMatchers(HttpMethod.DELETE, "/veiculos", "/veiculos/**")
-                .authenticated()
+                .requestMatchers(
+                    HttpMethod.GET, "/opcionais", "/opcionais/**"
+                ).permitAll()
 
-                // Alterações de imagens exigem autenticação
-                .requestMatchers(HttpMethod.POST, "/imagens", "/imagens/**")
-                .authenticated()
-                .requestMatchers(HttpMethod.PUT, "/imagens", "/imagens/**")
-                .authenticated()
-                .requestMatchers(HttpMethod.DELETE, "/imagens", "/imagens/**")
-                .authenticated()
+                // Alterações de veículos
+                .requestMatchers(
+                    HttpMethod.POST, "/veiculos", "/veiculos/**"
+                ).authenticated()
 
-                // Alterações de opcionais exigem autenticação
-                .requestMatchers(HttpMethod.POST, "/opcionais", "/opcionais/**")
-                .authenticated()
-                .requestMatchers(HttpMethod.PUT, "/opcionais", "/opcionais/**")
-                .authenticated()
-                .requestMatchers(HttpMethod.DELETE, "/opcionais", "/opcionais/**")
-                .authenticated()
+                .requestMatchers(
+                    HttpMethod.PUT, "/veiculos", "/veiculos/**"
+                ).authenticated()
 
-                // Administração de contas exige autenticação
-                .requestMatchers("/administradores", "/administradores/**")
-                .authenticated()
+                .requestMatchers(
+                    HttpMethod.DELETE, "/veiculos", "/veiculos/**"
+                ).authenticated()
 
-                // Todas as outras rotas exigem autenticação
+                // Alterações de imagens
+                .requestMatchers(
+                    HttpMethod.POST, "/imagens", "/imagens/**"
+                ).authenticated()
+
+                .requestMatchers(
+                    HttpMethod.PUT, "/imagens", "/imagens/**"
+                ).authenticated()
+
+                .requestMatchers(
+                    HttpMethod.DELETE, "/imagens", "/imagens/**"
+                ).authenticated()
+
+                // Alterações de opcionais
+                .requestMatchers(
+                    HttpMethod.POST, "/opcionais", "/opcionais/**"
+                ).authenticated()
+
+                .requestMatchers(
+                    HttpMethod.PUT, "/opcionais", "/opcionais/**"
+                ).authenticated()
+
+                .requestMatchers(
+                    HttpMethod.DELETE, "/opcionais", "/opcionais/**"
+                ).authenticated()
+
+                // Administração de contas
+                .requestMatchers(
+                    "/administradores", "/administradores/**"
+                ).authenticated()
+
+                // Demais rotas exigem autenticação
                 .anyRequest().authenticated()
+            )
+
+            // Login por formulário
+            .formLogin(form -> form
+                .loginPage("/admin/login.html")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/admin/painel.html", true)
+                .failureUrl("/admin/login.html?erro")
+                .permitAll()
             );
 
         return http.build();
