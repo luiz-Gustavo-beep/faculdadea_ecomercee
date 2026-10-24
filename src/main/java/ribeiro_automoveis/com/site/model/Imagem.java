@@ -1,4 +1,3 @@
-
 package ribeiro_automoveis.com.site.model;
 
 import jakarta.persistence.Entity;
@@ -19,8 +18,8 @@ public class Imagem {
 
     @NotBlank(message = "A URL da imagem é obrigatória")
     @Pattern(
-        regexp = "https?://.+",
-        message = "A URL deve começar com http:// ou https://"
+        regexp = "(https?://.+|/uploads/veiculos/[A-Za-z0-9-]+\\.(jpg|png|webp))",
+        message = "Informe uma URL válida ou o caminho de uma imagem armazenada"
     )
     private String url;
 

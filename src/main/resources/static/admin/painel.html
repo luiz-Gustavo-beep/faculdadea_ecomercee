@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo | Ribeiro Automóveis</title>
+    <link rel="stylesheet" href="css/painel.css">
+</head>
+<body>
+
+    <aside class="menu-lateral">
+        <div class="logo-area">
+            <img src="../img/logo-principal.png" alt="Ribeiro Automóveis">
+            <h2>Ribeiro Automóveis</h2>
+        </div>
+
+        <nav>
+            <a href="#inicio" class="ativo">Visão geral</a>
+            <a href="#veiculos">Veículos</a>
+            <a href="#mensagens">Mensagens</a>
+        </nav>
+
+        <a href="login.html" class="botao-sair">Sair</a>
+    </aside>
+
+    <main class="conteudo">
+
+        <header class="cabecalho">
+            <div>
+                <p class="subtitulo">ÁREA ADMINISTRATIVA</p>
+                <h1>Painel de controle</h1>
+            </div>
+            <span class="usuario">Administrador</span>
+        </header>
+
+        <section id="inicio" class="boas-vindas">
+            <h2>Bem-vindo ao painel!</h2>
+            <p>Gerencie os veículos e acompanhe os contatos dos clientes.</p>
+        </section>
+
+        <section class="resumo">
+            <article class="cartao">
+                <span>Veículos</span>
+                <h3>Gerenciar veículos</h3>
+                <p>Consulte e cadastre veículos no sistema.</p>
+                <a href="#veiculos">Acessar veículos</a>
+            </article>
+
+            <article class="cartao">
+                <span>Mensagens</span>
+                <h3>Contatos recebidos</h3>
+                <p>Consulte as mensagens enviadas pelos interessados.</p>
+                <a href="#mensagens">Acessar mensagens</a>
+            </article>
+        </section>
+
+        <section id="veiculos" class="secao">
+            <div class="titulo-secao">
+                <div>
+                    <h2>Cadastrar veículo</h2>
+                    <p>Preencha os dados para adicionar um veículo.</p>
+                </div>
+            </div>
+
+            <form id="form-veiculo">
+                <div class="formulario-veiculo">
+
+                    <div class="campo">
+                        <label for="marca">Marca</label>
+                        <input type="text" id="marca" name="marca"
+                               placeholder="Ex.: Toyota" required>
+                    </div>
+
+                    <div class="campo">
+                        <label for="modelo">Modelo</label>
+                        <input type="text" id="modelo" name="modelo"
+                               placeholder="Ex.: Corolla" required>
+                    </div>
+
+                    <div class="campo">
+                        <label for="ano">Ano</label>
+                        <input type="number" id="ano" name="ano"
+                               min="1" step="1" placeholder="Ex.: 2022" required>
+                    </div>
+
+                    <div class="campo">
+                        <label for="preco">Preço (R$)</label>
+                        <input type="number" id="preco" name="preco"
+                               min="0" step="0.01"
+                               placeholder="Ex.: 95000.00" required>
+                    </div>
+
+                    <div class="campo campo-completo">
+                        <label for="descricao">Descrição</label>
+                        <textarea id="descricao" name="descricao" rows="4"
+                                  placeholder="Descreva os detalhes do veículo"
+                                  required></textarea>
+                    </div>
+
+                    <div class="campo">
+                        <label for="situacao">Situação</label>
+                        <select id="situacao" name="situacao" required>
+                            <option value="disponível">Disponível</option>
+                            <option value="indisponível">Indisponível</option>
+                        </select>
+                    </div>
+
+                    <div class="campo campo-completo">
+                        <label for="foto">Foto do veículo (JPG, PNG ou WEBP)</label>
+                        <input
+                            type="file"
+                            id="foto"
+                            name="foto"
+                            accept="image/jpeg,image/png,image/webp"
+                        >
+                        <small>Opcional. Tamanho máximo: 5 MB.</small>
+                        <div id="previa-foto" style="margin-top: 10px;"></div>
+                    </div>
+
+                </div>
+
+                <button type="submit" id="btn-cadastrar" class="botao-atualizar">
+                    Cadastrar veículo
+                </button>
+
+                <p id="estado-cadastro" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+
+        <section class="secao">
+            <div class="titulo-secao">
+                <div>
+                    <h2>Veículos cadastrados</h2>
+                    <p>Lista de veículos disponíveis no sistema.</p>
+                </div>
+
+                <button type="button" id="btn-atualizar"
+                        class="botao-atualizar">
+                    Atualizar lista
+                </button>
+            </div>
+
+            <p id="estado-veiculos" role="status">Carregando veículos...</p>
+
+            <div class="tabela-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Veículo</th>
+                            <th>Ano</th>
+                            <th>Preço</th>
+                            <th>Situação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-veiculos"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="mensagens" class="secao">
+            <h2>Mensagens</h2>
+            <p>A consulta das mensagens será conectada ao backend em uma próxima etapa.</p>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Ribeiro Automóveis</p>
+        </footer>
+
+    </main>
+
+    <script>
+        const listaVeiculos = document.getElementById("lista-veiculos");
+        const estadoVeiculos = document.getElementById("estado-veiculos");
+        const botaoAtualizar = document.getElementById("btn-atualizar");
+
+        const formularioVeiculo = document.getElementById("form-veiculo");
+        const estadoCadastro = document.getElementById("estado-cadastro");
+        const botaoCadastrar = document.getElementById("btn-cadastrar");
+        const campoFoto = document.getElementById("foto");
+        const previaFoto = document.getElementById("previa-foto");
+
+        const TAMANHO_MAXIMO = 5 * 1024 * 1024;
+        const TIPOS_PERMITIDOS = [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+        ];
+
+        campoFoto.addEventListener("change", function () {
+            previaFoto.replaceChildren();
+
+            const arquivo = campoFoto.files[0];
+
+            if (!arquivo) {
+                return;
+            }
+
+            if (!TIPOS_PERMITIDOS.includes(arquivo.type)) {
+                campoFoto.value = "";
+                estadoCadastro.textContent =
+                    "Formato inválido. Selecione JPG, PNG ou WEBP.";
+                return;
+            }
+
+            if (arquivo.size > TAMANHO_MAXIMO) {
+                campoFoto.value = "";
+                estadoCadastro.textContent =
+                    "A imagem deve ter no máximo 5 MB.";
+                return;
+            }
+
+            const imagem = document.createElement("img");
+            imagem.src = URL.createObjectURL(arquivo);
+            imagem.alt = "Prévia da foto selecionada";
+            imagem.style.maxWidth = "250px";
+            imagem.style.maxHeight = "180px";
+            imagem.style.objectFit = "cover";
+            imagem.style.borderRadius = "8px";
+
+            imagem.addEventListener("load", () => {
+                URL.revokeObjectURL(imagem.src);
+            });
+
+            previaFoto.appendChild(imagem);
+            estadoCadastro.textContent = "Foto selecionada.";
+        });
+
+        async function carregarVeiculos() {
+            estadoVeiculos.textContent = "Carregando veículos...";
+            listaVeiculos.replaceChildren();
+
+            try {
+                const resposta = await fetch("/veiculos");
+
+                if (!resposta.ok) {
+                    throw new Error("Não foi possível consultar os veículos.");
+                }
+
+                const veiculos = await resposta.json();
+
+                if (!Array.isArray(veiculos) || veiculos.length === 0) {
+                    estadoVeiculos.textContent =
+                        "Nenhum veículo disponível encontrado.";
+                    return;
+                }
+
+                veiculos.forEach(veiculo => {
+                    const linha = document.createElement("tr");
+
+                    const valores = [
+                        veiculo.id,
+                        `${veiculo.marca ?? ""} ${veiculo.modelo ?? ""}`.trim(),
+                        veiculo.ano,
+                        formatarPreco(veiculo.preco),
+                        veiculo.situacao
+                    ];
+
+                    valores.forEach(valor => {
+                        const celula = document.createElement("td");
+                        celula.textContent = valor ?? "-";
+                        linha.appendChild(celula);
+                    });
+
+                    listaVeiculos.appendChild(linha);
+                });
+
+                estadoVeiculos.textContent =
+                    `${veiculos.length} veículo(s) encontrado(s).`;
+
+            } catch (erro) {
+                console.error("Erro ao carregar veículos:", erro);
+                estadoVeiculos.textContent =
+                    "Não foi possível carregar os veículos. Verifique o servidor e o acesso à API.";
+            }
+        }
+
+        function formatarPreco(preco) {
+            if (preco === null || preco === undefined) {
+                return "Não informado";
+            }
+
+            return Number(preco).toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+            });
+        }
+
+        formularioVeiculo.addEventListener("submit", async function (evento) {
+            evento.preventDefault();
+
+            estadoCadastro.textContent = "Cadastrando veículo...";
+            botaoCadastrar.disabled = true;
+
+            const arquivo = campoFoto.files[0];
+
+            if (arquivo) {
+                if (!TIPOS_PERMITIDOS.includes(arquivo.type)) {
+                    estadoCadastro.textContent =
+                        "Formato inválido. Use JPG, PNG ou WEBP.";
+                    botaoCadastrar.disabled = false;
+                    return;
+                }
+
+                if (arquivo.size > TAMANHO_MAXIMO) {
+                    estadoCadastro.textContent =
+                        "A imagem deve ter no máximo 5 MB.";
+                    botaoCadastrar.disabled = false;
+                    return;
+                }
+            }
+
+            const dadosVeiculo = {
+                marca: document.getElementById("marca").value.trim(),
+                modelo: document.getElementById("modelo").value.trim(),
+                ano: Number(document.getElementById("ano").value),
+                preco: Number(document.getElementById("preco").value),
+                descricao: document.getElementById("descricao").value.trim(),
+                situacao: document.getElementById("situacao").value,
+                administrador: {
+                    id: 3
+                }
+            };
+
+            try {
+                const resposta = await fetch("/veiculos", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(dadosVeiculo)
+                });
+
+                if (!resposta.ok) {
+                    const detalhe = await resposta.text();
+                    throw new Error(`Erro ao cadastrar veículo (${resposta.status}): ${detalhe}`);
+                }
+
+                const veiculoCriado = await resposta.json();
+
+                if (arquivo) {
+                    estadoCadastro.textContent =
+                        "Veículo cadastrado. Enviando a foto...";
+
+                    const formularioImagem = new FormData();
+                    formularioImagem.append("arquivo", arquivo);
+
+                    const respostaImagem = await fetch(
+                        `/imagens/upload/${veiculoCriado.id}`,
+                        {
+                            method: "POST",
+                            body: formularioImagem
+                        }
+                    );
+
+                    if (!respostaImagem.ok) {
+                        const detalheImagem = await respostaImagem.text();
+
+                        formularioVeiculo.reset();
+                        previaFoto.replaceChildren();
+                        await carregarVeiculos();
+
+                        throw new Error(
+                            `O veículo foi cadastrado, mas a foto não foi salva (${respostaImagem.status}): ${detalheImagem}`
+                        );
+                    }
+
+                    estadoCadastro.textContent =
+                        "Veículo e foto cadastrados com sucesso!";
+                } else {
+                    estadoCadastro.textContent =
+                        "Veículo cadastrado com sucesso! Você não selecionou uma foto.";
+                }
+
+                formularioVeiculo.reset();
+                previaFoto.replaceChildren();
+
+                await carregarVeiculos();
+
+            } catch (erro) {
+                console.error("Erro no cadastro:", erro);
+                estadoCadastro.textContent = erro.message ||
+                    "Não foi possível concluir o cadastro. Confira o console.";
+            } finally {
+                botaoCadastrar.disabled = false;
+            }
+        });
+
+        botaoAtualizar.addEventListener("click", carregarVeiculos);
+
+        carregarVeiculos();
+    </script>
+
+</body>
+</html>
