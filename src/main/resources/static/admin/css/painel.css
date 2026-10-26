@@ -28,6 +28,7 @@ body {
     padding: 25px 18px;
     display: flex;
     flex-direction: column;
+    z-index: 10;
 }
 
 .logo-area {
@@ -83,6 +84,7 @@ body {
 /* Conteúdo principal */
 .conteudo {
     margin-left: 250px;
+    min-width: 0;
     padding: 35px;
 }
 
@@ -136,12 +138,13 @@ body {
 /* Cartões do painel */
 .resumo {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px;
     margin-bottom: 30px;
 }
 
 .cartao {
+    min-width: 0;
     background-color: #ffffff;
     padding: 24px;
     border-radius: 10px;
@@ -184,6 +187,7 @@ body {
 
 /* Seções */
 .secao {
+    min-width: 0;
     background-color: #ffffff;
     padding: 25px;
     margin-bottom: 20px;
@@ -198,14 +202,6 @@ body {
 
 .secao p {
     color: #666666;
-}
-
-/* Rodapé */
-footer {
-    text-align: center;
-    padding: 25px 0 10px;
-    color: #777777;
-    font-size: 13px;
 }
 
 /* Cabeçalho das seções */
@@ -227,23 +223,50 @@ footer {
     color: #666666;
 }
 
-/* Botões gerais */
-.botao-atualizar {
+/* Botões */
+button {
+    font-family: Arial, sans-serif;
+}
+
+.botao-atualizar,
+#btn-cadastrar,
+#btn-cancelar-edicao,
+.tabela-responsiva button {
+    display: inline-block;
     background-color: #f58220;
     color: #ffffff;
     border: none;
-    border-radius: 6px;
-    padding: 11px 16px;
+    border-radius: 8px;
+    padding: 12px 18px;
     font-weight: bold;
+    font-size: 14px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.2s;
 }
 
-.botao-atualizar:hover {
+.botao-atualizar:hover,
+#btn-cadastrar:hover,
+#btn-cancelar-edicao:hover,
+.tabela-responsiva button:hover {
     background-color: #d9660b;
 }
 
-/* Área de cadastro de veículos */
+.botao-atualizar:active,
+#btn-cadastrar:active,
+#btn-cancelar-edicao:active {
+    transform: translateY(1px);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+button[hidden] {
+    display: none !important;
+}
+
+/* Formulário de veículos */
 #veiculos.secao {
     padding: 30px;
 }
@@ -257,7 +280,6 @@ footer {
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
 }
 
-/* Organização dos campos */
 .formulario-veiculo {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -269,6 +291,7 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 9px;
+    min-width: 0;
 }
 
 .campo label {
@@ -288,10 +311,7 @@ footer {
     color: #292929;
     font-family: Arial, sans-serif;
     font-size: 14px;
-    transition:
-        border-color 0.2s,
-        box-shadow 0.2s,
-        background-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
 .campo input,
@@ -329,82 +349,129 @@ footer {
     grid-column: 1 / -1;
 }
 
-/* Botão de cadastro */
-#form-veiculo .botao-atualizar {
-    min-height: 48px;
-    padding: 13px 24px;
+#foto {
+    cursor: pointer;
+}
+
+#ajuda-foto {
+    color: #777777;
+    font-size: 13px;
+}
+
+#previa-foto {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+#previa-foto img {
+    max-width: 160px;
+    max-height: 120px;
+    object-fit: cover;
     border-radius: 8px;
-    font-size: 14px;
-    box-shadow: 0 4px 10px rgba(245, 130, 32, 0.18);
-    transition:
-        transform 0.2s,
-        background-color 0.2s,
-        box-shadow 0.2s;
 }
 
-#form-veiculo .botao-atualizar:hover {
-    background-color: #d9660b;
-    box-shadow: 0 6px 14px rgba(245, 130, 32, 0.24);
-    transform: translateY(-1px);
+.acoes-formulario {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
 }
 
-#form-veiculo .botao-atualizar:active {
-    transform: translateY(0);
-}
-
-/* Mensagem de retorno do cadastro */
 #estado-cadastro {
     margin-top: 18px;
     font-size: 14px;
     font-weight: 600;
+    overflow-wrap: anywhere;
 }
 
-/* Tabela de veículos */
-#estado-veiculos {
-    color: #666666;
-    margin-bottom: 15px;
-}
-
-.tabela-container {
+/* Tabelas: os nomes correspondem ao HTML */
+.tabela-responsiva {
     width: 100%;
+    max-width: 100%;
     overflow-x: auto;
+    margin-top: 20px;
+    border-radius: 8px;
 }
 
-.tabela-container table {
+.tabela-responsiva table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 580px;
+    min-width: 650px;
+    table-layout: auto;
 }
 
-.tabela-container th,
-.tabela-container td {
-    padding: 13px 12px;
+.tabela-responsiva th,
+.tabela-responsiva td {
+    padding: 14px 16px;
     text-align: left;
+    vertical-align: middle;
     border-bottom: 1px solid #eeeeee;
 }
 
-.tabela-container th {
+.tabela-responsiva th {
     background-color: #fff0e3;
     color: #444444;
     font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
 }
 
-.tabela-container td {
+.tabela-responsiva td {
+    color: #555555;
     font-size: 14px;
+    overflow-wrap: anywhere;
 }
 
-.tabela-container tbody tr:hover {
+.tabela-responsiva tbody tr:hover {
     background-color: #fafafa;
 }
 
-/* Adaptação para telas médias */
+.tabela-responsiva tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabela-responsiva button {
+    white-space: nowrap;
+    padding: 10px 16px;
+}
+
+#estado-veiculos,
+#estado-mensagens {
+    color: #666666;
+    margin: 15px 0;
+}
+
+#estado-veiculos:empty,
+#estado-mensagens:empty {
+    display: none;
+}
+
+/* Mensagens */
+#lista-mensagens td {
+    max-width: 280px;
+}
+
+/* Rodapé */
+footer {
+    text-align: center;
+    padding: 25px 0 10px;
+    color: #777777;
+    font-size: 13px;
+}
+
+/* Telas médias */
 @media (max-width: 1000px) {
+    .conteudo {
+        padding: 25px;
+    }
+
     .resumo {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
-/* Adaptação para celulares */
+/* Celulares */
 @media (max-width: 700px) {
     .menu-lateral {
         width: 100%;
@@ -429,7 +496,7 @@ footer {
 
     .conteudo {
         margin-left: 0;
-        padding: 20px;
+        padding: 16px;
     }
 
     .cabecalho h1 {
@@ -440,12 +507,13 @@ footer {
         grid-template-columns: 1fr;
     }
 
+    .secao,
     #veiculos.secao {
         padding: 20px;
     }
 
     #form-veiculo {
-        padding: 20px;
+        padding: 18px;
     }
 
     .formulario-veiculo {
@@ -457,7 +525,16 @@ footer {
         grid-column: auto;
     }
 
-    #form-veiculo .botao-atualizar {
+    .acoes-formulario {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .acoes-formulario button {
         width: 100%;
+    }
+
+    .tabela-responsiva table {
+        min-width: 650px;
     }
 }

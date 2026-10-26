@@ -1,13 +1,15 @@
 package service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import ribeiro_automoveis.com.site.model.Imagem;
-
 import ribeiro_automoveis.com.site.repository.ImagemRepository;
 
-@Service 
+@Service
 public class ImagemService {
+
     private final ImagemRepository imagemRepository;
 
     public ImagemService(ImagemRepository imagemRepository) {
@@ -30,4 +32,7 @@ public class ImagemService {
         return imagemRepository.findAll();
     }
 
+    public List<Imagem> listarPorVeiculo(Long veiculoId) {
+        return imagemRepository.findByVeiculo_Id(veiculoId);
+    }
 }

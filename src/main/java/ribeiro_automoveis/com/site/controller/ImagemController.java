@@ -1,6 +1,7 @@
 package ribeiro_automoveis.com.site.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,7 +36,6 @@ public class ImagemController {
             ImagemService imagemService,
             ArquivoImagemService arquivoImagemService,
             VeiculoRepository veiculoRepository) {
-
         this.imagemService = imagemService;
         this.arquivoImagemService = arquivoImagemService;
         this.veiculoRepository = veiculoRepository;
@@ -51,15 +51,20 @@ public class ImagemController {
         return imagemService.buscarImagemPorId(id);
     }
 
+    @GetMapping("/veiculo/{veiculoId}")
+    public List<Imagem> listarImagensPorVeiculo(
+            @PathVariable Long veiculoId) {
+        return imagemService.listarPorVeiculo(veiculoId);
+    }
+
     @PostMapping
     public Imagem salvarImagem(@Valid @RequestBody Imagem imagem) {
         return imagemService.salvarImagem(imagem);
     }
 
     @PostMapping(
-        value = "/upload/{veiculoId}",
-        consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
+            value = "/upload/{veiculoId}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Imagem enviarImagem(
             @PathVariable Long veiculoId,
             @RequestParam("arquivo") MultipartFile arquivo) {
@@ -80,7 +85,8 @@ public class ImagemController {
 
         } catch (IllegalArgumentException erro) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, erro.getMessage());
+                    HttpStatus.BAD_REQUEST,
+                    erro.getMessage());
 
         } catch (IOException erro) {
             throw new ResponseStatusException(
