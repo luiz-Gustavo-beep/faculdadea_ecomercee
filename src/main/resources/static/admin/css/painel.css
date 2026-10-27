@@ -16,7 +16,10 @@ body {
     line-height: 1.6;
 }
 
-/* Menu lateral */
+/* ========================================
+   MENU LATERAL
+======================================== */
+
 .menu-lateral {
     width: 250px;
     height: 100vh;
@@ -29,6 +32,7 @@ body {
     display: flex;
     flex-direction: column;
     z-index: 10;
+    overflow-y: auto;
 }
 
 .logo-area {
@@ -81,9 +85,13 @@ body {
     background-color: #d9660b;
 }
 
-/* Conteúdo principal */
+/* ========================================
+   CONTEÚDO PRINCIPAL
+======================================== */
+
 .conteudo {
     margin-left: 250px;
+    width: calc(100% - 250px);
     min-width: 0;
     padding: 35px;
 }
@@ -117,7 +125,10 @@ body {
     font-size: 14px;
 }
 
-/* Boas-vindas */
+/* ========================================
+   BOAS-VINDAS
+======================================== */
+
 .boas-vindas {
     background-color: #ffffff;
     padding: 28px;
@@ -135,7 +146,10 @@ body {
     color: #666666;
 }
 
-/* Cartões do painel */
+/* ========================================
+   CARTÕES DO PAINEL
+======================================== */
+
 .resumo {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -185,8 +199,12 @@ body {
     background-color: #d9660b;
 }
 
-/* Seções */
+/* ========================================
+   SEÇÕES
+======================================== */
+
 .secao {
+    width: 100%;
     min-width: 0;
     background-color: #ffffff;
     padding: 25px;
@@ -204,7 +222,6 @@ body {
     color: #666666;
 }
 
-/* Cabeçalho das seções */
 .titulo-secao {
     display: flex;
     justify-content: space-between;
@@ -223,7 +240,10 @@ body {
     color: #666666;
 }
 
-/* Botões */
+/* ========================================
+   BOTÕES GERAIS
+======================================== */
+
 button {
     font-family: Arial, sans-serif;
 }
@@ -266,7 +286,10 @@ button[hidden] {
     display: none !important;
 }
 
-/* Formulário de veículos */
+/* ========================================
+   FORMULÁRIO DE VEÍCULOS
+======================================== */
+
 #veiculos.secao {
     padding: 30px;
 }
@@ -304,6 +327,7 @@ button[hidden] {
 .campo select,
 .campo textarea {
     width: 100%;
+    min-width: 0;
     padding: 14px 15px;
     border: 1px solid #dedede;
     border-radius: 8px;
@@ -371,6 +395,11 @@ button[hidden] {
     border-radius: 8px;
 }
 
+#previa-foto button {
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
 .acoes-formulario {
     display: flex;
     flex-wrap: wrap;
@@ -385,19 +414,26 @@ button[hidden] {
     overflow-wrap: anywhere;
 }
 
-/* Tabelas: os nomes correspondem ao HTML */
+/* ========================================
+   TABELAS
+======================================== */
+
 .tabela-responsiva {
+    display: block;
     width: 100%;
     max-width: 100%;
+    min-width: 0;
     overflow-x: auto;
+    overflow-y: hidden;
     margin-top: 20px;
     border-radius: 8px;
+    -webkit-overflow-scrolling: touch;
 }
 
 .tabela-responsiva table {
     width: 100%;
-    border-collapse: collapse;
     min-width: 650px;
+    border-collapse: collapse;
     table-layout: auto;
 }
 
@@ -421,6 +457,7 @@ button[hidden] {
     color: #555555;
     font-size: 14px;
     overflow-wrap: anywhere;
+    word-break: normal;
 }
 
 .tabela-responsiva tbody tr:hover {
@@ -440,6 +477,7 @@ button[hidden] {
 #estado-mensagens {
     color: #666666;
     margin: 15px 0;
+    overflow-wrap: anywhere;
 }
 
 #estado-veiculos:empty,
@@ -447,12 +485,160 @@ button[hidden] {
     display: none;
 }
 
-/* Mensagens */
-#lista-mensagens td {
-    max-width: 280px;
+/* ========================================
+   TABELA DE MENSAGENS
+======================================== */
+
+#mensagens {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
 }
 
-/* Rodapé */
+#mensagens .tabela-responsiva {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-top: 15px;
+    border-radius: 8px;
+}
+
+#mensagens table {
+    width: 100%;
+    min-width: 1050px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+/* Larguras das oito colunas */
+#mensagens th:nth-child(1),
+#mensagens td:nth-child(1) {
+    width: 12%;
+}
+
+#mensagens th:nth-child(2),
+#mensagens td:nth-child(2) {
+    width: 15%;
+}
+
+#mensagens th:nth-child(3),
+#mensagens td:nth-child(3) {
+    width: 11%;
+}
+
+#mensagens th:nth-child(4),
+#mensagens td:nth-child(4) {
+    width: 12%;
+}
+
+#mensagens th:nth-child(5),
+#mensagens td:nth-child(5) {
+    width: 19%;
+}
+
+#mensagens th:nth-child(6),
+#mensagens td:nth-child(6) {
+    width: 13%;
+}
+
+#mensagens th:nth-child(7),
+#mensagens td:nth-child(7) {
+    width: 8%;
+}
+
+#mensagens th:nth-child(8),
+#mensagens td:nth-child(8) {
+    width: 10%;
+}
+
+#mensagens th,
+#mensagens td {
+    padding: 10px;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid #eeeeee;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+#mensagens th {
+    background-color: #fff0e3;
+    color: #444444;
+    font-size: 13px;
+    line-height: 1.4;
+    white-space: normal;
+}
+
+#mensagens td {
+    color: #555555;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* Coluna de ações */
+#mensagens th:last-child,
+#mensagens td:last-child {
+    min-width: 125px;
+}
+
+/* Botão Marcar como lida */
+#mensagens .botao-lida {
+    display: block;
+    width: 100%;
+    max-width: 125px;
+    margin: 0 0 6px;
+    padding: 8px 9px;
+    border: none;
+    border-radius: 7px;
+    background-color: #2e7d32;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1.35;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+}
+
+#mensagens .botao-lida:hover {
+    background-color: #256628;
+}
+
+/* Botão Remover mensagem */
+#mensagens .botao-remover-mensagem {
+    display: block;
+    width: 100%;
+    max-width: 125px;
+    margin: 0 0 4px;
+    padding: 8px 9px;
+    border: none;
+    border-radius: 7px;
+    background-color: #f58220;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1.35;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+}
+
+#mensagens .botao-remover-mensagem:hover {
+    background-color: #d9660b;
+}
+
+#mensagens .botao-lida:disabled,
+#mensagens .botao-remover-mensagem:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ========================================
+   RODAPÉ
+======================================== */
+
 footer {
     text-align: center;
     padding: 25px 0 10px;
@@ -460,25 +646,33 @@ footer {
     font-size: 13px;
 }
 
-/* Telas médias */
-@media (max-width: 1000px) {
+/* ========================================
+   TELAS MÉDIAS
+======================================== */
+
+@media (max-width: 1100px) {
     .conteudo {
         padding: 25px;
     }
 
-    .resumo {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .secao {
+        padding: 22px;
     }
 }
 
-/* Celulares */
+/* ========================================
+   CELULARES
+======================================== */
+
 @media (max-width: 700px) {
     .menu-lateral {
         width: 100%;
         height: auto;
+        min-height: 0;
         position: relative;
         border-right: none;
         border-bottom: 3px solid #f58220;
+        overflow-y: visible;
     }
 
     .logo-area {
@@ -495,6 +689,7 @@ footer {
     }
 
     .conteudo {
+        width: 100%;
         margin-left: 0;
         padding: 16px;
     }
@@ -509,7 +704,7 @@ footer {
 
     .secao,
     #veiculos.secao {
-        padding: 20px;
+        padding: 18px;
     }
 
     #form-veiculo {
@@ -536,5 +731,15 @@ footer {
 
     .tabela-responsiva table {
         min-width: 650px;
+    }
+
+    #mensagens table {
+        min-width: 1050px;
+    }
+
+    #mensagens th,
+    #mensagens td {
+        padding: 9px;
+        font-size: 12px;
     }
 }

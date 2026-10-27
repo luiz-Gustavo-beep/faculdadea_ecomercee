@@ -164,8 +164,8 @@ async function carregarVeiculos() {
             });
 
             const celulaAcoes = document.createElement("td");
-            const botaoEditar = document.createElement("button");
 
+            const botaoEditar = document.createElement("button");
             botaoEditar.type = "button";
             botaoEditar.className = "botao-atualizar";
             botaoEditar.textContent = "Editar";
@@ -174,7 +174,16 @@ async function carregarVeiculos() {
                 iniciarEdicao(veiculo);
             });
 
-            celulaAcoes.appendChild(botaoEditar);
+            const botaoExcluir = document.createElement("button");
+            botaoExcluir.type = "button";
+            botaoExcluir.textContent = "Excluir";
+            botaoExcluir.style.marginLeft = "8px";
+
+            botaoExcluir.addEventListener("click", () => {
+                excluirVeiculo(veiculo);
+            });
+
+            celulaAcoes.append(botaoEditar, botaoExcluir);
             linha.appendChild(celulaAcoes);
             listaVeiculos.appendChild(linha);
         });
@@ -188,6 +197,59 @@ async function carregarVeiculos() {
             "Não foi possível carregar os veículos. Verifique o servidor e o acesso à API.";
     }
 }
+
+// ========================================
+// EXCLUIR VEÍCULO
+// ========================================
+
+async function excluirVeiculo(veiculo) {
+    const nomeVeiculo =
+        `${veiculo.marca ?? ""} ${veiculo.modelo ?? ""}`.trim();
+
+    const confirmar = window.confirm(
+        `Deseja excluir o veículo ${nomeVeiculo} (ID ${veiculo.id})?\n\n` +
+        "Se houver imagens ou mensagens vinculadas, o sistema poderá apenas marcá-lo como indisponível."
+    );
+
+    if (!confirmar) {
+        return;
+    }
+
+    estadoVeiculos.textContent = `Excluindo veículo ${veiculo.id}...`;
+
+    try {
+        const resposta = await fetch(`/veiculos/${veiculo.id}`, {
+            method: "DELETE"
+        });
+
+        if (!resposta.ok) {
+            const detalhe = await resposta.text();
+
+            throw new Error(
+                `Erro ao excluir (${resposta.status}): ${detalhe}`
+            );
+        }
+
+        if (veiculoEmEdicao === veiculo.id) {
+            cancelarEdicao();
+        }
+
+        estadoVeiculos.textContent =
+            `Operação concluída para ${nomeVeiculo}. O veículo pode ter sido removido ou marcado como indisponível.`;
+
+        await carregarVeiculos();
+
+    } catch (erro) {
+        console.error("Erro ao excluir veículo:", erro);
+
+        estadoVeiculos.textContent =
+            erro.message || "Não foi possível excluir o veículo.";
+    }
+}
+
+// ========================================
+// FORMATAR PREÇO
+// ========================================
 
 function formatarPreco(preco) {
     if (preco === null || preco === undefined) {
@@ -489,7 +551,8 @@ async function carregarMensagens() {
                 mensagem.telefone,
                 nomeVeiculo,
                 mensagem.texto,
-                formatarData(mensagem.dataEnvio)
+                formatarData(mensagem.dataEnvio),
+                mensagem.lida ? "Lida" : "Não lida"
             ];
 
             valores.forEach(valor => {
@@ -498,6 +561,35 @@ async function carregarMensagens() {
                 linha.appendChild(celula);
             });
 
+            const celulaAcoes = document.createElement("td");
+            celulaAcoes.className = "acoes-mensagem";
+
+            if (!mensagem.lida) {
+                const botaoLida = document.createElement("button");
+
+                botaoLida.type = "button";
+                botaoLida.className = "botao-lida";
+                botaoLida.textContent = "Marcar como lida";
+
+                botaoLida.addEventListener("click", () => {
+                    marcarMensagemComoLida(mensagem.id, botaoLida);
+                });
+
+                celulaAcoes.appendChild(botaoLida);
+            }
+
+            const botaoRemover = document.createElement("button");
+
+            botaoRemover.type = "button";
+            botaoRemover.className = "botao-remover-mensagem";
+            botaoRemover.textContent = "Remover";
+
+            botaoRemover.addEventListener("click", () => {
+                excluirMensagem(mensagem.id, mensagem.nome, botaoRemover);
+            });
+
+            celulaAcoes.appendChild(botaoRemover);
+            linha.appendChild(celulaAcoes);
             listaMensagens.appendChild(linha);
         });
 
@@ -509,6 +601,84 @@ async function carregarMensagens() {
 
         estadoMensagens.textContent =
             "Não foi possível carregar as mensagens. Verifique o servidor.";
+    }
+}
+
+// ========================================
+// MARCAR MENSAGEM COMO LIDA
+// ========================================
+
+async function marcarMensagemComoLida(id, botao) {
+    botao.disabled = true;
+    botao.textContent = "Atualizando...";
+
+    try {
+        const resposta = await fetch(`/mensagens/${id}/lida`, {
+            method: "PUT"
+        });
+
+        if (!resposta.ok) {
+            const detalhe = await resposta.text();
+
+            throw new Error(
+                `Erro ao marcar mensagem como lida (${resposta.status}): ${detalhe}`
+            );
+        }
+
+        await carregarMensagens();
+
+    } catch (erro) {
+        console.error("Erro ao marcar mensagem como lida:", erro);
+
+        botao.disabled = false;
+        botao.textContent = "Marcar como lida";
+
+        window.alert(
+            erro.message || "Não foi possível marcar a mensagem como lida."
+        );
+    }
+}
+
+// ========================================
+// REMOVER MENSAGEM
+// ========================================
+
+async function excluirMensagem(id, nome, botao) {
+    const confirmar = window.confirm(
+        `Deseja remover a mensagem enviada por ${nome || "este contato"}?`
+    );
+
+    if (!confirmar) {
+        return;
+    }
+
+    botao.disabled = true;
+    botao.textContent = "Removendo...";
+
+    try {
+        const resposta = await fetch(`/mensagens/${id}`, {
+            method: "DELETE"
+        });
+
+        if (!resposta.ok) {
+            const detalhe = await resposta.text();
+
+            throw new Error(
+                `Erro ao remover mensagem (${resposta.status}): ${detalhe}`
+            );
+        }
+
+        await carregarMensagens();
+
+    } catch (erro) {
+        console.error("Erro ao remover mensagem:", erro);
+
+        botao.disabled = false;
+        botao.textContent = "Remover";
+
+        window.alert(
+            erro.message || "Não foi possível remover a mensagem."
+        );
     }
 }
 
