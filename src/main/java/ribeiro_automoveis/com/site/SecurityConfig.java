@@ -28,6 +28,7 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
+                
                 // Arquivos públicos do site
                 .requestMatchers(
                     "/",
@@ -35,6 +36,7 @@ public class SecurityConfig {
                     "/veiculos.html",
                     "/css/**",
                     "/img/**",
+                    "/uploads/**",
                     "/admin/login.html",
                     "/admin/css/**"
                 ).permitAll()

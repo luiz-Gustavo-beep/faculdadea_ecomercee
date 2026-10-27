@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -41,6 +42,13 @@ public class Mensagem {
     private Veiculo veiculo;
 
     public Mensagem() {
+    }
+
+    @PrePersist
+    public void definirDataEnvio() {
+        if (this.dataEnvio == null) {
+            this.dataEnvio = LocalDateTime.now();
+        }
     }
 
     public Long getId() {

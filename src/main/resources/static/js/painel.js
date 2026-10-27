@@ -18,19 +18,23 @@ const previaFoto = document.getElementById("previa-foto");
 const TAMANHO_MAXIMO = 5 * 1024 * 1024;
 const TIPOS_PERMITIDOS = ["image/jpeg", "image/png", "image/webp"];
 
+let fotosSelecionadas = [];
 let veiculoEmEdicao = null;
 
+// ========================================
+// SELEÇÃO ACUMULATIVA DE FOTOS
+// ========================================
+
 campoFoto.addEventListener("change", function () {
-    previaFoto.replaceChildren();
     estadoCadastro.textContent = "";
 
-    const arquivos = Array.from(campoFoto.files);
+    const novosArquivos = Array.from(campoFoto.files);
 
-    for (const arquivo of arquivos) {
+    for (const arquivo of novosArquivos) {
         if (!TIPOS_PERMITIDOS.includes(arquivo.type)) {
             campoFoto.value = "";
             estadoCadastro.textContent =
-                "Formato inválido. Selecione apenas JPG, PNG ou WEBP.";
+                `A imagem "${arquivo.name}" tem formato inválido. Use JPG, PNG ou WEBP.`;
             return;
         }
 
@@ -42,30 +46,84 @@ campoFoto.addEventListener("change", function () {
         }
     }
 
-    arquivos.forEach(arquivo => {
+    for (const arquivo of novosArquivos) {
+        const jaAdicionado = fotosSelecionadas.some(item =>
+            item.name === arquivo.name &&
+            item.size === arquivo.size &&
+            item.lastModified === arquivo.lastModified
+        );
+
+        if (!jaAdicionado) {
+            fotosSelecionadas.push(arquivo);
+        }
+    }
+
+    campoFoto.value = "";
+
+    renderizarPreviaFotos();
+
+    estadoCadastro.textContent = fotosSelecionadas.length
+        ? `${fotosSelecionadas.length} foto(s) selecionada(s). Você pode adicionar mais.`
+        : "";
+});
+
+function renderizarPreviaFotos() {
+    previaFoto.replaceChildren();
+
+    fotosSelecionadas.forEach((arquivo, indice) => {
+        const recipiente = document.createElement("div");
+
+        recipiente.style.display = "inline-flex";
+        recipiente.style.flexDirection = "column";
+        recipiente.style.alignItems = "center";
+        recipiente.style.verticalAlign = "top";
+        recipiente.style.margin = "0 10px 10px 0";
+        recipiente.style.gap = "5px";
+
         const imagem = document.createElement("img");
         const urlTemporaria = URL.createObjectURL(arquivo);
 
         imagem.src = urlTemporaria;
         imagem.alt = `Prévia: ${arquivo.name}`;
-        imagem.style.maxWidth = "160px";
-        imagem.style.maxHeight = "120px";
+        imagem.title = arquivo.name;
+        imagem.style.width = "160px";
+        imagem.style.height = "120px";
         imagem.style.objectFit = "cover";
         imagem.style.borderRadius = "8px";
-        imagem.style.marginRight = "8px";
-        imagem.style.marginBottom = "8px";
 
         imagem.addEventListener("load", () => {
             URL.revokeObjectURL(urlTemporaria);
+        }, { once: true });
+
+        const nome = document.createElement("span");
+
+        nome.textContent = arquivo.name;
+        nome.style.maxWidth = "160px";
+        nome.style.overflowWrap = "anywhere";
+        nome.style.fontSize = "12px";
+
+        const botaoRemover = document.createElement("button");
+
+        botaoRemover.type = "button";
+        botaoRemover.textContent = "Remover";
+
+        botaoRemover.addEventListener("click", () => {
+            fotosSelecionadas.splice(indice, 1);
+            renderizarPreviaFotos();
+
+            estadoCadastro.textContent = fotosSelecionadas.length
+                ? `${fotosSelecionadas.length} foto(s) selecionada(s).`
+                : "Nenhuma foto selecionada.";
         });
 
-        previaFoto.appendChild(imagem);
+        recipiente.append(imagem, nome, botaoRemover);
+        previaFoto.appendChild(recipiente);
     });
+}
 
-    estadoCadastro.textContent = arquivos.length
-        ? `${arquivos.length} foto(s) selecionada(s).`
-        : "";
-});
+// ========================================
+// CARREGAR VEÍCULOS
+// ========================================
 
 async function carregarVeiculos() {
     estadoVeiculos.textContent = "Carregando veículos...";
@@ -142,6 +200,34 @@ function formatarPreco(preco) {
     });
 }
 
+// ========================================
+// FORMATAR DATA E HORA DA MENSAGEM
+// ========================================
+
+function formatarData(data) {
+    if (!data) {
+        return "Não informada";
+    }
+
+    const dataEnvio = new Date(data);
+
+    if (Number.isNaN(dataEnvio.getTime())) {
+        return String(data);
+    }
+
+    return dataEnvio.toLocaleString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
+// ========================================
+// EDITAR VEÍCULO
+// ========================================
+
 function iniciarEdicao(veiculo) {
     veiculoEmEdicao = veiculo.id;
 
@@ -152,6 +238,7 @@ function iniciarEdicao(veiculo) {
     document.getElementById("descricao").value = veiculo.descricao ?? "";
 
     const situacao = document.getElementById("situacao");
+
     const situacoesValidas = Array.from(situacao.options)
         .some(opcao => opcao.value === veiculo.situacao);
 
@@ -166,11 +253,14 @@ function iniciarEdicao(veiculo) {
     botaoCadastrar.textContent = "Salvar alterações";
     botaoCancelarEdicao.hidden = false;
 
+    fotosSelecionadas = [];
     campoFoto.value = "";
     campoFoto.disabled = false;
+
     ajudaFoto.textContent =
-        "Opcional. Selecione novas fotos para adicionar sem remover as atuais. Máximo de 5 MB por foto.";
-    previaFoto.replaceChildren();
+        "Opcional. Você pode selecionar fotos agora e adicionar outras depois. As fotos atuais não serão removidas.";
+
+    renderizarPreviaFotos();
 
     estadoCadastro.textContent =
         `Veículo ${veiculo.marca} ${veiculo.modelo} selecionado para edição.`;
@@ -184,12 +274,14 @@ function iniciarEdicao(veiculo) {
 function cancelarEdicao() {
     veiculoEmEdicao = null;
     formularioVeiculo.reset();
+    fotosSelecionadas = [];
 
     campoFoto.disabled = false;
-    ajudaFoto.textContent =
-        "Opcional. Selecione uma ou mais fotos. Tamanho máximo: 5 MB por foto.";
 
-    previaFoto.replaceChildren();
+    ajudaFoto.textContent =
+        "Opcional. Selecione fotos em uma ou mais etapas. Tamanho máximo: 5 MB por foto.";
+
+    renderizarPreviaFotos();
 
     tituloFormulario.textContent = "Cadastrar veículo";
     descricaoFormulario.textContent =
@@ -199,6 +291,10 @@ function cancelarEdicao() {
     botaoCancelarEdicao.hidden = true;
     estadoCadastro.textContent = "";
 }
+
+// ========================================
+// ENVIAR FOTOS PARA O BACKEND
+// ========================================
 
 async function enviarFotos(veiculoId, arquivos) {
     for (const arquivo of arquivos) {
@@ -225,6 +321,10 @@ async function enviarFotos(veiculoId, arquivos) {
     }
 }
 
+// ========================================
+// CADASTRAR OU ATUALIZAR VEÍCULO
+// ========================================
+
 botaoCancelarEdicao.addEventListener("click", cancelarEdicao);
 
 formularioVeiculo.addEventListener("submit", async function (evento) {
@@ -237,7 +337,7 @@ formularioVeiculo.addEventListener("submit", async function (evento) {
     botaoCadastrar.disabled = true;
     botaoCancelarEdicao.disabled = true;
 
-    const arquivos = Array.from(campoFoto.files);
+    const arquivos = [...fotosSelecionadas];
 
     try {
         for (const arquivo of arquivos) {
@@ -279,6 +379,7 @@ formularioVeiculo.addEventListener("submit", async function (evento) {
 
             if (!resposta.ok) {
                 const detalhe = await resposta.text();
+
                 throw new Error(
                     `Erro ao atualizar o veículo (${resposta.status}): ${detalhe}`
                 );
@@ -291,7 +392,7 @@ formularioVeiculo.addEventListener("submit", async function (evento) {
             cancelarEdicao();
 
             estadoCadastro.textContent = arquivos.length > 0
-                ? "Veículo atualizado e novas fotos adicionadas com sucesso!"
+                ? `Veículo atualizado e ${arquivos.length} nova(s) foto(s) adicionada(s) com sucesso!`
                 : "Veículo atualizado com sucesso!";
 
             await carregarVeiculos();
@@ -307,8 +408,9 @@ formularioVeiculo.addEventListener("submit", async function (evento) {
 
             if (!resposta.ok) {
                 const detalhe = await resposta.text();
+
                 throw new Error(
-                    `Erro ao cadastrar veículo (${resposta.status}): ${detalhe}`
+                    `Erro ao cadastrar o veículo (${resposta.status}): ${detalhe}`
                 );
             }
 
@@ -316,31 +418,107 @@ formularioVeiculo.addEventListener("submit", async function (evento) {
 
             if (arquivos.length > 0) {
                 await enviarFotos(veiculoCriado.id, arquivos);
-                estadoCadastro.textContent =
-                    `Veículo cadastrado e ${arquivos.length} foto(s) enviada(s) com sucesso!`;
-            } else {
-                estadoCadastro.textContent =
-                    "Veículo cadastrado com sucesso! Você não selecionou fotos.";
             }
 
             formularioVeiculo.reset();
-            previaFoto.replaceChildren();
+            fotosSelecionadas = [];
+            renderizarPreviaFotos();
+
+            estadoCadastro.textContent = arquivos.length > 0
+                ? `Veículo cadastrado e ${arquivos.length} foto(s) enviada(s) com sucesso!`
+                : "Veículo cadastrado com sucesso! Você não selecionou fotos.";
 
             await carregarVeiculos();
         }
 
     } catch (erro) {
         console.error("Erro no formulário de veículos:", erro);
+
         estadoCadastro.textContent = erro.message ||
             "Não foi possível concluir a operação. Confira o console.";
+
     } finally {
         botaoCadastrar.disabled = false;
         botaoCancelarEdicao.disabled = false;
     }
 });
 
+// ========================================
+// CARREGAR MENSAGENS RECEBIDAS
+// ========================================
+
+async function carregarMensagens() {
+    const listaMensagens = document.getElementById("lista-mensagens");
+    const estadoMensagens = document.getElementById("estado-mensagens");
+
+    if (!listaMensagens || !estadoMensagens) {
+        console.error("Elementos da tabela de mensagens não encontrados.");
+        return;
+    }
+
+    estadoMensagens.textContent = "Carregando mensagens...";
+    listaMensagens.replaceChildren();
+
+    try {
+        const resposta = await fetch("/mensagens");
+
+        if (!resposta.ok) {
+            throw new Error(
+                `Erro ao buscar mensagens (${resposta.status}).`
+            );
+        }
+
+        const mensagens = await resposta.json();
+
+        if (!Array.isArray(mensagens) || mensagens.length === 0) {
+            estadoMensagens.textContent = "Nenhuma mensagem recebida.";
+            return;
+        }
+
+        mensagens.forEach(mensagem => {
+            const linha = document.createElement("tr");
+
+            const veiculo = mensagem.veiculo;
+            const nomeVeiculo = veiculo
+                ? `${veiculo.marca ?? ""} ${veiculo.modelo ?? ""}`.trim()
+                : "Veículo não informado";
+
+            const valores = [
+                mensagem.nome,
+                mensagem.email,
+                mensagem.telefone,
+                nomeVeiculo,
+                mensagem.texto,
+                formatarData(mensagem.dataEnvio)
+            ];
+
+            valores.forEach(valor => {
+                const celula = document.createElement("td");
+                celula.textContent = valor ?? "-";
+                linha.appendChild(celula);
+            });
+
+            listaMensagens.appendChild(linha);
+        });
+
+        estadoMensagens.textContent =
+            `${mensagens.length} mensagem(ns) recebida(s).`;
+
+    } catch (erro) {
+        console.error("Erro ao carregar mensagens:", erro);
+
+        estadoMensagens.textContent =
+            "Não foi possível carregar as mensagens. Verifique o servidor.";
+    }
+}
+
+// ========================================
+// BOTÕES E INICIALIZAÇÃO
+// ========================================
+
 if (botaoAtualizar) {
     botaoAtualizar.addEventListener("click", carregarVeiculos);
 }
 
 carregarVeiculos();
+carregarMensagens();
